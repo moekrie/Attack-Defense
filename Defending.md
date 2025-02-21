@@ -15,6 +15,7 @@ Anda bisa menggunakan iptables untuk membatasi laju permintaan ke server agar po
 Contoh, batasi koneksi masuk pada port tertentu (misalnya, port 22 untuk SSH):
 
 `sudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set`
+
 `sudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 60 --hitcount 5 -j REJECT`
 
 Aturan ini akan menolak koneksi lebih dari 5 kali dalam 60 detik, yang bisa melindungi dari pemindaian port yang sangat cepat.
@@ -38,6 +39,7 @@ Untuk melihat layanan yang sedang berjalan:
 Untuk menghentikan dan menonaktifkan layanan yang tidak diperlukan, seperti telnet, ftp, dsb.:
 
 `sudo systemctl stop <nama_layanan>`
+
 `sudo systemctl disable <nama_layanan>`
 
 ### Batasi Pengguna dan Izin Akses
@@ -70,7 +72,9 @@ Meskipun SELinux tidak diaktifkan secara default di Debian, Anda bisa mengaktifk
 Untuk mengaktifkan AppArmor:
 
 `sudo apt install apparmor apparmor-utils`
+
 `sudo systemctl enable apparmor`
+
 `sudo systemctl start apparmor`
 
 ### Konfigurasi File System
@@ -154,4 +158,5 @@ Pastikan Anda memantau log sistem secara teratur untuk mendeteksi anomali dan po
 Gunakan logwatch atau alat lainnya untuk menganalisis dan melaporkan log:
 
 `sudo apt install logwatch`
+
 `sudo logwatch --detail high --mailto your-email@example.com --service all --range today`
