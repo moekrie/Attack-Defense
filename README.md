@@ -1,2 +1,3 @@
 # Attack-Defense
-Contekan untuk lomba
+
+Repo Catatan Untuk CyberSecurity
