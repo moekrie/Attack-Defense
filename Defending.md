@@ -6,21 +6,26 @@ Batasi akses ke port tertentu hanya untuk IP yang dapat dipercaya. Dengan ini, A
 Misalnya, jika hanya ada satu IP yang diizinkan untuk mengakses SSH, Anda bisa menambahkan aturan seperti ini:
 
 `sudo iptables -A INPUT -p tcp --dport 22 -s 192.168.1.100 -j ACCEPT`
+
 Ini akan membatasi akses SSH hanya untuk alamat IP 192.168.1.100.
 
 Menangkal Port Scanning dengan Rate Limiting
 Anda bisa menggunakan iptables untuk membatasi laju permintaan ke server agar port scanning tidak bisa dilakukan secara bebas.
 
 Contoh, batasi koneksi masuk pada port tertentu (misalnya, port 22 untuk SSH):
+
 `sudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set`
 `sudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 60 --hitcount 5 -j REJECT`
+
 Aturan ini akan menolak koneksi lebih dari 5 kali dalam 60 detik, yang bisa melindungi dari pemindaian port yang sangat cepat.
 
 Drop Paket dengan TTL (Time-To-Live) Rendah
 Port scanner sering kali mengirimkan paket dengan nilai TTL yang rendah untuk mencoba menganalisis apakah host yang dipindai berada di belakang router atau firewall. Anda bisa membuat firewall menanggapi paket dengan TTL rendah agar pemindai kesulitan mendeteksi host Anda.
 
 Untuk melakukannya, Anda dapat menambahkan aturan berikut di iptables:
+
 `sudo iptables -A INPUT -p tcp -m ttl --ttl-lt 64 -j DROP'
+
 Aturan ini akan menolak paket dengan TTL lebih rendah dari 64.
 
 ### Nonaktifkan Layanan yang Tidak Diperlukan
@@ -56,6 +61,7 @@ Gunakan port non-standar untuk SSH (port 22)
 Port 22
 
 Restart SSH:
+
 `sudo systemctl restart ssh`
 
 ### Gunakan SELinux atau AppArmor
@@ -78,7 +84,9 @@ UUID=xxxx-xxxx /tmp ext4 defaults,noexec,nosuid,nodev 0 2
 Auditd adalah alat untuk mencatat aktivitas sistem dan membantu dalam pelacakan.
 
 Pasang dengan:
+
 `sudo apt install auditd`
+
 Setelah diinstal, Anda bisa menambahkan aturan audit untuk mencatat aktivitas penting, seperti login, perintah sudo, atau akses file tertentu.
 
 ### Gunakan PAM (Pluggable Authentication Module) untuk menetapkan kebijakan password yang kuat, seperti panjang minimal, kompleksitas, dan kedaluwarsa kata sandi.
@@ -96,6 +104,7 @@ net.ipv6.conf.default.disable_ipv6 = 1
 net.ipv6.conf.lo.disable_ipv6 = 1
 
 Kemudian terapkan perubahan:
+
 `sudo sysctl -p`
 
 ### Amankan Paket dan Repositori
@@ -112,10 +121,12 @@ Fail2Ban adalah alat yang dapat digunakan untuk melindungi server dari brute-for
 Untuk menginstal dan mengonfigurasi Fail2Ban di Debian:
 
 Install Fail2Ban:
+
 `sudo apt install fail2ban`
 
 Konfigurasi Fail2Ban untuk melindungi layanan SSH:
 Edit file konfigurasi utama:
+
 `sudo nano /etc/fail2ban/jail.local`
 
 Tambahkan aturan berikut untuk mengaktifkan perlindungan SSH:
@@ -134,6 +145,7 @@ maxretry: Jumlah percakapan gagal sebelum IP diblokir.
 bantime: Durasi waktu IP diblokir (dalam detik).
 
 Restart Fail2Ban untuk menerapkan perubahan:
+
 `sudo systemctl restart fail2ban`
 
 ### Audit dan Monitor Log
