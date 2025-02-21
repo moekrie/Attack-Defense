@@ -1,4 +1,4 @@
-### Gunakan Firewall (iptables) untuk Membatasi Akses
+### Gunakan IPTables untuk Membatasi Akses
 Firewall adalah alat pertama yang dapat digunakan untuk mengontrol lalu lintas jaringan yang masuk dan keluar dari sistem Anda.
 
 Membatasi Akses Berdasarkan IP
