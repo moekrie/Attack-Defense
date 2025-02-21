@@ -5,9 +5,9 @@ Membatasi Akses Berdasarkan IP
 Batasi akses ke port tertentu hanya untuk IP yang dapat dipercaya. Dengan ini, Anda hanya memperbolehkan IP yang dikenal untuk mengakses layanan tertentu.
 Misalnya, jika hanya ada satu IP yang diizinkan untuk mengakses SSH, Anda bisa menambahkan aturan seperti ini:
 
-`sudo iptables -A INPUT -p tcp --dport 22 -s 192.168.1.100 -j ACCEPT`
+`sudo iptables -A INPUT -p tcp --dport 22 -s 192.168.1.10 -j ACCEPT`
 
-Ini akan membatasi akses SSH hanya untuk alamat IP 192.168.1.100.
+Ini akan membatasi akses SSH hanya untuk alamat IP 192.168.1.10.
 
 Menangkal Port Scanning dengan Rate Limiting
 Anda bisa menggunakan iptables untuk membatasi laju permintaan ke server agar port scanning tidak bisa dilakukan secara bebas.
