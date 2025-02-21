@@ -5,22 +5,22 @@ Membatasi Akses Berdasarkan IP
 Batasi akses ke port tertentu hanya untuk IP yang dapat dipercaya. Dengan ini, Anda hanya memperbolehkan IP yang dikenal untuk mengakses layanan tertentu.
 Misalnya, jika hanya ada satu IP yang diizinkan untuk mengakses SSH, Anda bisa menambahkan aturan seperti ini:
 
-'sudo iptables -A INPUT -p tcp --dport 22 -s 192.168.1.100 -j ACCEPT'
+`sudo iptables -A INPUT -p tcp --dport 22 -s 192.168.1.100 -j ACCEPT`
 Ini akan membatasi akses SSH hanya untuk alamat IP 192.168.1.100.
 
 Menangkal Port Scanning dengan Rate Limiting
 Anda bisa menggunakan iptables untuk membatasi laju permintaan ke server agar port scanning tidak bisa dilakukan secara bebas.
 
 Contoh, batasi koneksi masuk pada port tertentu (misalnya, port 22 untuk SSH):
-'sudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set'
-'sudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 60 --hitcount 5 -j REJECT'
+`sudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set`
+`sudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 60 --hitcount 5 -j REJECT`
 Aturan ini akan menolak koneksi lebih dari 5 kali dalam 60 detik, yang bisa melindungi dari pemindaian port yang sangat cepat.
 
 Drop Paket dengan TTL (Time-To-Live) Rendah
 Port scanner sering kali mengirimkan paket dengan nilai TTL yang rendah untuk mencoba menganalisis apakah host yang dipindai berada di belakang router atau firewall. Anda bisa membuat firewall menanggapi paket dengan TTL rendah agar pemindai kesulitan mendeteksi host Anda.
 
 Untuk melakukannya, Anda dapat menambahkan aturan berikut di iptables:
-'sudo iptables -A INPUT -p tcp -m ttl --ttl-lt 64 -j DROP'
+`sudo iptables -A INPUT -p tcp -m ttl --ttl-lt 64 -j DROP'
 Aturan ini akan menolak paket dengan TTL lebih rendah dari 64.
 
 ### Nonaktifkan Layanan yang Tidak Diperlukan
@@ -28,12 +28,12 @@ Matikan dan hapus layanan atau daemon yang tidak digunakan, karena setiap layana
 
 Untuk melihat layanan yang sedang berjalan:
 
-'systemctl list-units --type=service'
+`systemctl list-units --type=service`
 
 Untuk menghentikan dan menonaktifkan layanan yang tidak diperlukan, seperti telnet, ftp, dsb.:
 
-'sudo systemctl stop <nama_layanan>'
-'sudo systemctl disable <nama_layanan>'
+`sudo systemctl stop <nama_layanan>`
+`sudo systemctl disable <nama_layanan>`
 
 ### Batasi Pengguna dan Izin Akses
 Batasi siapa saja yang dapat mengakses sistem Anda, dan pastikan hanya pengguna yang berhak yang dapat masuk.
@@ -56,16 +56,16 @@ Gunakan port non-standar untuk SSH (port 22)
 Port 22
 
 Restart SSH:
-'sudo systemctl restart ssh'
+`sudo systemctl restart ssh`
 
 ### Gunakan SELinux atau AppArmor
 Meskipun SELinux tidak diaktifkan secara default di Debian, Anda bisa mengaktifkan AppArmor, yang berfungsi untuk membatasi akses program pada sumber daya sistem.
 
 Untuk mengaktifkan AppArmor:
 
-'sudo apt install apparmor apparmor-utils'
-'sudo systemctl enable apparmor'
-'sudo systemctl start apparmor'
+`sudo apt install apparmor apparmor-utils`
+`sudo systemctl enable apparmor`
+`sudo systemctl start apparmor`
 
 ### Konfigurasi File System
 Menambahkan proteksi pada sistem file bisa membantu menghindari potensi eksploitasi.
@@ -78,7 +78,7 @@ UUID=xxxx-xxxx /tmp ext4 defaults,noexec,nosuid,nodev 0 2
 Auditd adalah alat untuk mencatat aktivitas sistem dan membantu dalam pelacakan.
 
 Pasang dengan:
-'sudo apt install auditd'
+`sudo apt install auditd`
 Setelah diinstal, Anda bisa menambahkan aturan audit untuk mencatat aktivitas penting, seperti login, perintah sudo, atau akses file tertentu.
 
 ### Gunakan PAM (Pluggable Authentication Module) untuk menetapkan kebijakan password yang kuat, seperti panjang minimal, kompleksitas, dan kedaluwarsa kata sandi.
@@ -96,7 +96,7 @@ net.ipv6.conf.default.disable_ipv6 = 1
 net.ipv6.conf.lo.disable_ipv6 = 1
 
 Kemudian terapkan perubahan:
-'sudo sysctl -p'
+`sudo sysctl -p`
 
 ### Amankan Paket dan Repositori
 Pastikan hanya repositori yang terpercaya yang digunakan untuk menginstal perangkat lunak.
@@ -104,7 +104,7 @@ Pastikan hanya repositori yang terpercaya yang digunakan untuk menginstal perang
 Gunakan APT pinning untuk mengunci versi paket tertentu atau hanya memperbolehkan paket dari repositori yang terpercaya.
 Untuk mengunci versi paket:
 
-'echo "package-name hold" | sudo dpkg --set-selections'
+`echo "package-name hold" | sudo dpkg --set-selections`
 
 ### Gunakan Fail2Ban untuk Memblokir IP yang Mencurigakan
 Fail2Ban adalah alat yang dapat digunakan untuk melindungi server dari brute-force attacks dan port scanning dengan memblokir IP yang mencoba mengakses port secara berulang kali dalam waktu singkat.
@@ -112,11 +112,11 @@ Fail2Ban adalah alat yang dapat digunakan untuk melindungi server dari brute-for
 Untuk menginstal dan mengonfigurasi Fail2Ban di Debian:
 
 Install Fail2Ban:
-'sudo apt install fail2ban'
+`sudo apt install fail2ban`
 
 Konfigurasi Fail2Ban untuk melindungi layanan SSH:
 Edit file konfigurasi utama:
-'sudo nano /etc/fail2ban/jail.local'
+`sudo nano /etc/fail2ban/jail.local`
 
 Tambahkan aturan berikut untuk mengaktifkan perlindungan SSH:
 [sshd]
@@ -134,12 +134,12 @@ maxretry: Jumlah percakapan gagal sebelum IP diblokir.
 bantime: Durasi waktu IP diblokir (dalam detik).
 
 Restart Fail2Ban untuk menerapkan perubahan:
-'sudo systemctl restart fail2ban'
+`sudo systemctl restart fail2ban`
 
 ### Audit dan Monitor Log
 Pastikan Anda memantau log sistem secara teratur untuk mendeteksi anomali dan potensi serangan.
 
 Gunakan logwatch atau alat lainnya untuk menganalisis dan melaporkan log:
 
-'sudo apt install logwatch'
-'sudo logwatch --detail high --mailto your-email@example.com --service all --range today'
+`sudo apt install logwatch`
+`sudo logwatch --detail high --mailto your-email@example.com --service all --range today`
