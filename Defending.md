@@ -1,3 +1,28 @@
+# Gunakan Firewall (iptables) untuk Membatasi Akses
+Firewall adalah alat pertama yang dapat digunakan untuk mengontrol lalu lintas jaringan yang masuk dan keluar dari sistem Anda.
+
+1. Membatasi Akses Berdasarkan IP
+Batasi akses ke port tertentu hanya untuk IP yang dapat dipercaya. Dengan ini, Anda hanya memperbolehkan IP yang dikenal untuk mengakses layanan tertentu.
+Misalnya, jika hanya ada satu IP yang diizinkan untuk mengakses SSH, Anda bisa menambahkan aturan seperti ini:
+
+sudo iptables -A INPUT -p tcp --dport 22 -s 192.168.1.100 -j ACCEPT
+Ini akan membatasi akses SSH hanya untuk alamat IP 192.168.1.100.
+
+2. Menangkal Port Scanning dengan Rate Limiting
+Anda bisa menggunakan iptables untuk membatasi laju permintaan ke server agar port scanning tidak bisa dilakukan secara bebas.
+
+Contoh, batasi koneksi masuk pada port tertentu (misalnya, port 22 untuk SSH):
+sudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set
+sudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 60 --hitcount 5 -j REJECT
+Aturan ini akan menolak koneksi lebih dari 5 kali dalam 60 detik, yang bisa melindungi dari pemindaian port yang sangat cepat.
+
+3. Drop Paket dengan TTL (Time-To-Live) Rendah
+Port scanner sering kali mengirimkan paket dengan nilai TTL yang rendah untuk mencoba menganalisis apakah host yang dipindai berada di belakang router atau firewall. Anda bisa membuat firewall menanggapi paket dengan TTL rendah agar pemindai kesulitan mendeteksi host Anda.
+
+Untuk melakukannya, Anda dapat menambahkan aturan berikut di iptables:
+sudo iptables -A INPUT -p tcp -m ttl --ttl-lt 64 -j DROP
+Aturan ini akan menolak paket dengan TTL lebih rendah dari 64.
+
 # Nonaktifkan Layanan yang Tidak Diperlukan
 Matikan dan hapus layanan atau daemon yang tidak digunakan, karena setiap layanan yang aktif bisa menjadi titik kelemahan.
 
