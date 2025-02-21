@@ -86,10 +86,35 @@ bash
 Copy
 echo "package-name hold" | sudo dpkg --set-selections
 
-# Menggunakan Fail2ban 
-Walaupun Anda tidak menggunakan firewall, Anda bisa menggunakan Fail2ban untuk memblokir IP yang mencoba melakukan brute-force.
+# Gunakan Fail2Ban untuk Memblokir IP yang Mencurigakan
+Fail2Ban adalah alat yang dapat digunakan untuk melindungi server dari brute-force attacks dan port scanning dengan memblokir IP yang mencoba mengakses port secara berulang kali dalam waktu singkat.
 
+Untuk menginstal dan mengonfigurasi Fail2Ban di Debian:
+
+Install Fail2Ban:
 sudo apt install fail2ban
+
+Konfigurasi Fail2Ban untuk melindungi layanan SSH:
+Edit file konfigurasi utama:
+sudo nano /etc/fail2ban/jail.local
+
+Tambahkan aturan berikut untuk mengaktifkan perlindungan SSH:
+[sshd]
+enabled  = true
+port     = ssh
+logpath  = /var/log/auth.log
+maxretry = 3
+bantime  = 600
+
+Penjelasan:
+enabled: Mengaktifkan perlindungan untuk SSH.
+port: Port yang digunakan oleh SSH.
+logpath: Lokasi file log yang digunakan untuk melacak upaya login.
+maxretry: Jumlah percakapan gagal sebelum IP diblokir.
+bantime: Durasi waktu IP diblokir (dalam detik).
+
+Restart Fail2Ban untuk menerapkan perubahan:
+sudo systemctl restart fail2ban
 
 # Audit dan Monitor Log
 Pastikan Anda memantau log sistem secara teratur untuk mendeteksi anomali dan potensi serangan.
